@@ -595,9 +595,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fda9089820b9abbc4bfddff36dc905fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 0}
   speed: 3
   jumpStrength: 5
+  cloneTemplate: {fileID: 2256820617143588097, guid: 7398cb95889623a2d80be11175d20fdf, type: 3}
 --- !u!212 &1605977706
 SpriteRenderer:
   m_ObjectHideFlags: 0
