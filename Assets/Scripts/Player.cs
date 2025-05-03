@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
@@ -7,47 +8,59 @@ public class Player : MonoBehaviour
     private Animator anim;
     private int facingDirection;
     private float lastVelocity;
+    private List<Clone> clones;
     public ReplayData replay;
-    private GameObject clone;
 
-    [SerializeField] private float speed;
-    [SerializeField] private float jumpStrength;
-    [SerializeField] private GameObject cloneTemplate;
+    [SerializeField] private float speed = 3;
+    [SerializeField] private int maxClones = 1;
+    [SerializeField] private float jumpStrength = 5;
+    [SerializeField] private Clone cloneTemplate;
 
-    void Start(){
+    void Start()
+    {
         anim = GetComponent<Animator>();
         body = GetComponent<Rigidbody2D>();
         replay = new ReplayData();
+        clones = new List<Clone>();
         facingDirection = 1;
         lastVelocity = 0;
     }
 
-    void Update(){
+    void Update()
+    {
         Vector2 newVelocity = new Vector2(Input.GetAxis("Horizontal") * speed, body.linearVelocity.y);
         float deltaVelocity = (body.linearVelocity.y - lastVelocity);
         string animationName = "Stand";
 
         // direction check to flip animations horizontaly
-        if(Math.Abs(body.linearVelocity.x) > 0.01){
-            if(body.linearVelocity.x < -0.01){
+        if(Math.Abs(body.linearVelocity.x) > 0.01)
+        {
+            if(body.linearVelocity.x < -0.01)
+            {
                 facingDirection = -1;
             }
 
-            if(body.linearVelocity.x > 0.01){
+            if(body.linearVelocity.x > 0.01)
+            {
                 facingDirection = 1;
             }
 
-            if(Math.Abs(deltaVelocity) < 0.01){
+            if(Math.Abs(deltaVelocity) < 0.01)
+            {
                 animationName = "Run";
             }
         }
 
         // jumping and jump animation
-        if(Math.Abs(deltaVelocity) < 0.01){
-            if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space)){
+        if(Math.Abs(deltaVelocity) < 0.01)
+        {
+            if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space))
+            {
                 newVelocity.y = jumpStrength;
             }
-        } else {
+        } 
+        else 
+        {
             animationName = "Jump";
         }
 
@@ -62,16 +75,26 @@ public class Player : MonoBehaviour
         replay.facingDirections.Add(facingDirection);
         
         // reset and spawn/respawn clone
-        if(Input.GetKeyDown(KeyCode.E)){
-            if(clone != null){
-                Destroy(clone);
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            if (clones.Count < maxClones)
+            {
+                Clone clone = Instantiate(cloneTemplate);
+                clone.SetReplayData(replay);
+                clones.Add(clone);
             }
-            clone = Instantiate(cloneTemplate);
-            Clone cloneScript = clone.GetComponent<Clone>();
-            cloneScript.SetReplayData(replay);
-            replay = new ReplayData();
-            
+            else
+            {
+                clones[0].SetReplayData(replay);
+                clones.Add(clones[0]);
+                clones.RemoveAt(0);
+            }
+            Debug.Log(clones.Count);
+            foreach (Clone clone1 in clones)
+                clone1.Respawn();
+
             // reset
+            replay = new ReplayData();
             transform.position = new Vector3(0, 0, 0);
             body.linearVelocity = new Vector2(0, 0);
         }

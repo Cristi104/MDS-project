@@ -6,18 +6,22 @@ public class ReplayData
     public List<string> animations;
     public List<int> facingDirections;
 
-    public ReplayData(){
+    public ReplayData()
+    {
         this.positions = new List<Vector2>();
         this.animations = new List<string>();
         this.facingDirections = new List<int>();
     }
-    public ReplayData(List<Vector2> positions, List<string> animations, List<int> facingDirections){
+
+    public ReplayData(List<Vector2> positions, List<string> animations, List<int> facingDirections)
+    {
         this.positions = positions;
         this.animations = animations;
         this.facingDirections = facingDirections;
     }
 
-    public ReplayData DeepCopy(){
+    public ReplayData DeepCopy()
+    {
         return new ReplayData(new List<Vector2>(positions), new List<string>(animations), new List<int>(facingDirections));
     }
 }
