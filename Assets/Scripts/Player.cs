@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     private Animator anim;
     private int facingDirection;
     private float lastVelocity;
+    private Vector3 startPosition;
     private List<Clone> clones;
     public ReplayData replay;
 
@@ -18,6 +19,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        startPosition = transform.position;
         anim = GetComponent<Animator>();
         body = GetComponent<Rigidbody2D>();
         replay = new ReplayData();
@@ -52,7 +54,7 @@ public class Player : MonoBehaviour
         }
 
         // jumping and jump animation
-        if(Math.Abs(deltaVelocity) < 0.01)
+        if(Math.Abs(deltaVelocity) < 0.001)
         {
             if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space))
             {
@@ -89,13 +91,12 @@ public class Player : MonoBehaviour
                 clones.Add(clones[0]);
                 clones.RemoveAt(0);
             }
-            Debug.Log(clones.Count);
             foreach (Clone clone1 in clones)
                 clone1.Respawn();
 
             // reset
             replay = new ReplayData();
-            transform.position = new Vector3(0, 0, 0);
+            transform.position = startPosition;
             body.linearVelocity = new Vector2(0, 0);
         }
     }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class Clone : MonoBehaviour
 {
@@ -23,7 +24,7 @@ public class Clone : MonoBehaviour
             Color.cyan,
             Color.magenta
         };
-        int i = Random.Range(0, presetColors.Length);
+        int i = UnityEngine.Random.Range(0, presetColors.Length);
         spriteRenderer.color = presetColors[i];
     }
 
@@ -58,18 +59,8 @@ public class Clone : MonoBehaviour
             transform.localScale = new Vector3(replay.facingDirections[index], 1, 1);
         }
 
-        // set body type to dynamic once replay is done so that the clone falls
-        if(index >= replay.positions.Count)
-        {
-            body.bodyType = RigidbodyType2D.Dynamic;
-        } 
-        else 
-        {
-            body.bodyType = RigidbodyType2D.Static;
-        }
-
         // resume player collision after some time
-        if(index == 60)
+        if(index == Math.Max(0, replay.positions.Count - 60))
         {
             gameObject.layer = LayerMask.NameToLayer("Player");
         }
