@@ -10,13 +10,11 @@ public class NewMonoBehaviourScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        // when a player or clone colides with the spikes call Death
         if (other.CompareTag("Player"))
         {
-            Player player = other.GetComponent<Player>();
-            if(player != null) player.Death();
-
-            Clone clone = other.GetComponent<Clone>();
-            if (clone != null) clone.Death();
+            IPlayer player = other.GetComponent<IPlayer>();
+            if(player != null) player.Die();
         }
     }
 

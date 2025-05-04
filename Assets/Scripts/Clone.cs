@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class Clone : MonoBehaviour
+public class Clone : MonoBehaviour, IPlayer
 {
     private Rigidbody2D body;
     private Animator anim;
@@ -28,7 +28,7 @@ public class Clone : MonoBehaviour
         spriteRenderer.color = presetColors[i];
     }
 
-    public void Death()
+    public void Die()
     {
         transform.position = new Vector3(100, 100, 100);
         index = replay.positions.Count + 1;

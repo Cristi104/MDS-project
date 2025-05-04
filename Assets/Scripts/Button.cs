@@ -5,7 +5,7 @@ public class Button : MonoBehaviour
     private int pressers = 0;
     private Animator animator;
 
-    [SerializeField] private Door door;
+    [SerializeField] private Activateable activateableObject;
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -15,11 +15,12 @@ public class Button : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            // if there is no one on the button call open and
             if (pressers == 0)
             {
                 animator.enabled = true;
                 animator.Play("ButtonPress");
-                door.Open();
+                activateableObject.Activate();
             }
             pressers++;
         }
@@ -30,11 +31,12 @@ public class Button : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             pressers--;
+            // when everyone leaves the button call close
             if (pressers == 0)
             {
                 animator.enabled = true;
                 animator.Play("ButtonUnpress");
-                door.Close();
+                activateableObject.Deactivate();
             }
         }
     }

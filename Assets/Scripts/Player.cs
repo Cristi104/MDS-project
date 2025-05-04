@@ -2,7 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IPlayer
 {
     private Rigidbody2D body;
     private Animator anim;
@@ -28,7 +28,14 @@ public class Player : MonoBehaviour
         lastVelocity = 0;
     }
 
-    public void Death()
+    public void Respawn()
+    {
+        replay = new ReplayData();
+        transform.position = startPosition;
+        body.linearVelocity = new Vector2(0, 0);
+    }
+
+    public void Die()
     {
         if (clones.Count < maxClones)
         {
@@ -102,7 +109,7 @@ public class Player : MonoBehaviour
         // reset and spawn/respawn clone
         if(Input.GetKeyDown(KeyCode.E))
         {
-            Death();
+            Die();
         }
     }
 }

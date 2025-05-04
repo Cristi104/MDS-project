@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Door : MonoBehaviour
+public class Door : Activateable
 {
     private Vector3 startPosition;
     private Vector3 targetPosition;
@@ -16,6 +16,7 @@ public class Door : MonoBehaviour
        targetPosition = transform.position + openOffset;
     }
 
+    // interpolate to target position over secondsToOpen seconds
     private IEnumerator MoveToPosition(Vector3 target)
     {
         Vector3 start = transform.position;
@@ -31,7 +32,8 @@ public class Door : MonoBehaviour
         transform.position = target;
     }
 
-    public void Open()
+    // move from current position to targetPosition
+    public override void Activate()
     {
         if (currentMoveCoroutine != null)
         {
@@ -41,7 +43,8 @@ public class Door : MonoBehaviour
         currentMoveCoroutine = StartCoroutine(MoveToPosition(targetPosition));
     }
 
-    public void Close()
+    // move from current position to startPosition
+    public override void Deactivate()
     {
         if (currentMoveCoroutine != null)
         {
