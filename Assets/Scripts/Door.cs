@@ -9,12 +9,13 @@ public class Door : MonoBehaviour
 
     [SerializeField] private float secondsToOpen = 1f;
     [SerializeField] private Vector3 openOffset = Vector3.zero;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
        startPosition = transform.position;
        targetPosition = transform.position + openOffset;
     }
+
     private IEnumerator MoveToPosition(Vector3 target)
     {
         Vector3 start = transform.position;
@@ -27,7 +28,7 @@ public class Door : MonoBehaviour
             yield return null;
         }
 
-        transform.position = target; // Snap to final position
+        transform.position = target;
     }
 
     public void Open()
@@ -50,7 +51,6 @@ public class Door : MonoBehaviour
         currentMoveCoroutine = StartCoroutine(MoveToPosition(startPosition));
     }
 
-    // Update is called once per frame
     void Update()
     {
         

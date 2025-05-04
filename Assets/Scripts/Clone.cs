@@ -28,6 +28,12 @@ public class Clone : MonoBehaviour
         spriteRenderer.color = presetColors[i];
     }
 
+    public void Death()
+    {
+        transform.position = new Vector3(100, 100, 100);
+        index = replay.positions.Count + 1;
+    }
+
     public void Respawn()
     {
         index = 0;

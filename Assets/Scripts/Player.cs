@@ -28,6 +28,29 @@ public class Player : MonoBehaviour
         lastVelocity = 0;
     }
 
+    public void Death()
+    {
+        if (clones.Count < maxClones)
+        {
+            Clone clone = Instantiate(cloneTemplate);
+            clone.SetReplayData(replay);
+            clones.Add(clone);
+        }
+        else
+        {
+            clones[0].SetReplayData(replay);
+            clones.Add(clones[0]);
+            clones.RemoveAt(0);
+        }
+        foreach (Clone clone1 in clones)
+            clone1.Respawn();
+
+        // reset
+        replay = new ReplayData();
+        transform.position = startPosition;
+        body.linearVelocity = new Vector2(0, 0);
+    }
+
     void Update()
     {
         Vector2 newVelocity = new Vector2(Input.GetAxis("Horizontal") * speed, body.linearVelocity.y);
@@ -79,25 +102,7 @@ public class Player : MonoBehaviour
         // reset and spawn/respawn clone
         if(Input.GetKeyDown(KeyCode.E))
         {
-            if (clones.Count < maxClones)
-            {
-                Clone clone = Instantiate(cloneTemplate);
-                clone.SetReplayData(replay);
-                clones.Add(clone);
-            }
-            else
-            {
-                clones[0].SetReplayData(replay);
-                clones.Add(clones[0]);
-                clones.RemoveAt(0);
-            }
-            foreach (Clone clone1 in clones)
-                clone1.Respawn();
-
-            // reset
-            replay = new ReplayData();
-            transform.position = startPosition;
-            body.linearVelocity = new Vector2(0, 0);
+            Death();
         }
     }
 }

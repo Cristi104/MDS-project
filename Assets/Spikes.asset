@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9d1514134bc4fbd41bb739b1b9a49231, type: 3}
-  m_Name: Tile
+  m_Name: Spikes
   m_EditorClassIdentifier: 
-  m_DefaultSprite: {fileID: -9163426285224168042, guid: 9633a5261acee12438c0a256f6367c5f, type: 3}
+  m_DefaultSprite: {fileID: 6723963429988506304, guid: e39021e34c5406f4aa571452c7e83f38, type: 3}
   m_DefaultGameObject: {fileID: 0}
   m_DefaultColliderType: 1
   m_TilingRules: []

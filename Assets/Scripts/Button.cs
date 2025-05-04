@@ -6,7 +6,6 @@ public class Button : MonoBehaviour
     private Animator animator;
 
     [SerializeField] private Door door;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -39,7 +38,6 @@ public class Button : MonoBehaviour
             }
         }
     }
-    // Update is called once per frame
     void Update()
     {
         
