@@ -32,14 +32,19 @@ public class Button : MonoBehaviour
         {
             pressers--;
             // when everyone leaves the button call close
-            if (pressers == 0)
+            if (pressers == 0 && activateableObject != null)
             {
                 animator.enabled = true;
                 animator.Play("ButtonUnpress");
-                activateableObject.Deactivate();
+
+                if (activateableObject != null)
+                {
+                    activateableObject.Deactivate();
+                }
             }
         }
     }
+
     void Update()
     {
         
