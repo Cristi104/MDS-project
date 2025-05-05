@@ -86,7 +86,7 @@ public class Player : MonoBehaviour, IPlayer
         // jumping and jump animation
         if(Math.Abs(deltaVelocity) < 0.001)
         {
-            if(Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space))
+            if(Input.GetKeyDown(KeyCode.W))
             {
                 newVelocity.y = jumpStrength;
             }
@@ -107,7 +107,7 @@ public class Player : MonoBehaviour, IPlayer
         replay.facingDirections.Add(facingDirection);
         
         // reset and spawn/respawn clone
-        if(Input.GetKeyDown(KeyCode.E))
+        if(Input.GetKeyDown(KeyCode.R))
         {
             Die();
         }
