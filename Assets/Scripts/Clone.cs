@@ -65,11 +65,7 @@ public class Clone : MonoBehaviour, IPlayer
             transform.localScale = new Vector3(replay.facingDirections[index], 1, 1);
         }
 
-        // resume player collision after some time
-        if(index == Math.Max(0, replay.positions.Count - 60))
-        {
-            gameObject.layer = LayerMask.NameToLayer("Player");
-        }
+        
 
         index++;
     }
