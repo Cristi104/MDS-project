@@ -2,25 +2,23 @@ using UnityEngine;
 
 public class ExitDoor : MonoBehaviour
 {
-
     [SerializeField] string nextLevelName = null;
+    [SerializeField] LevelTimer levelTimer; 
 
     void Start()
     {
-        
+        if (levelTimer == null)
+        {
+            Debug.LogError("LevelTimer not assigned!");
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // when a player or clone colides with the spikes call Death
         if (other.CompareTag("Player") && nextLevelName != null)
         {
+            levelTimer.StopTimer(); 
             UnityEngine.SceneManagement.SceneManager.LoadScene(nextLevelName);
         }
-    }
-
-    void Update()
-    {
-        
     }
 }
