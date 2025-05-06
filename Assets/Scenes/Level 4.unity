@@ -5115,7 +5115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39b214608005fd04a8ed777419c1723d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextLevelName: Level 6
+  nextLevelName: Level 5
   levelTimer: {fileID: 1113528939}
 --- !u!212 &1905226523
 SpriteRenderer:
