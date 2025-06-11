@@ -11,6 +11,12 @@ public class Player : MonoBehaviour, IPlayer
     private Vector3 startPosition;
     private List<Clone> clones;
     public ReplayData replay;
+    private AudioSource audioSource;
+    private string jumpSoundFile = "Free UI Click Sound Effects Pack/AUDIO/Pop/SFX_UI_Click_Organic_Pop_Liquid_Thick_Generic_1";
+    private string runSoundFile = "Free UI Click Sound Effects Pack/AUDIO/Sci-Fi/SFX_UI_Click_Designed_Scifi_Thin_Negative_Back_1";
+    private AudioClip jumpSound;
+    private AudioClip runSound;
+    private int frameCounter = 0;
 
     [SerializeField] private float speed = 3;
     [SerializeField] private int maxClones = 1;
@@ -19,6 +25,9 @@ public class Player : MonoBehaviour, IPlayer
 
     void Start()
     {
+        jumpSound = Resources.Load<AudioClip>(jumpSoundFile);
+        runSound = Resources.Load<AudioClip>(runSoundFile);
+        audioSource = GetComponent<AudioSource>();
         startPosition = transform.position;
         anim = GetComponent<Animator>();
         body = GetComponent<Rigidbody2D>();
@@ -46,6 +55,7 @@ public class Player : MonoBehaviour, IPlayer
         else
         {
             clones[0].SetReplayData(replay);
+            clones[0].Respawn();
             clones.Add(clones[0]);
             clones.RemoveAt(0);
         }
@@ -60,25 +70,31 @@ public class Player : MonoBehaviour, IPlayer
 
     void Update()
     {
+        frameCounter++;
         Vector2 newVelocity = new Vector2(Input.GetAxis("Horizontal") * speed, body.linearVelocity.y);
         float deltaVelocity = (body.linearVelocity.y - lastVelocity);
         string animationName = "Stand";
 
         // direction check to flip animations horizontaly
-        if(Math.Abs(body.linearVelocity.x) > 0.01)
+        if (Math.Abs(body.linearVelocity.x) > 0.01)
         {
-            if(body.linearVelocity.x < -0.01)
+            if (body.linearVelocity.x < -0.01)
             {
                 facingDirection = -1;
             }
 
-            if(body.linearVelocity.x > 0.01)
+            if (body.linearVelocity.x > 0.01)
             {
                 facingDirection = 1;
             }
 
-            if(Math.Abs(deltaVelocity) < 0.01)
+            if (Math.Abs(deltaVelocity) < 0.01)
             {
+                if (frameCounter % 6 == 0)
+                {
+                    audioSource.clip = runSound;
+                    audioSource.Play();
+                }
                 animationName = "Run";
             }
         }
@@ -88,6 +104,8 @@ public class Player : MonoBehaviour, IPlayer
         {
             if(Input.GetKeyDown(KeyCode.W))
             {
+                audioSource.clip = jumpSound;
+                audioSource.Play();
                 newVelocity.y = jumpStrength;
             }
         } 
