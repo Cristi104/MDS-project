@@ -51,16 +51,15 @@ public class Player : MonoBehaviour, IPlayer
             Clone clone = Instantiate(cloneTemplate);
             clone.SetReplayData(replay);
             clones.Add(clone);
+            EventManager.Instance.Subscribe(clone);
         }
         else
         {
             clones[0].SetReplayData(replay);
-            clones[0].Respawn();
             clones.Add(clones[0]);
             clones.RemoveAt(0);
         }
-        foreach (Clone clone1 in clones)
-            clone1.Respawn();
+        EventManager.Instance.Notify("reset");
 
         // reset
         replay = new ReplayData();

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class Clone : MonoBehaviour, IPlayer
+public class Clone : MonoBehaviour, IPlayer, IEventListener
 {
     private Rigidbody2D body;
     private Animator anim;
@@ -38,6 +38,12 @@ public class Clone : MonoBehaviour, IPlayer
     {
         index = 0;
         gameObject.layer = LayerMask.NameToLayer("Clone");
+    }
+
+    public void UpdateEvent(string e)
+    {
+        if (e == "reset")
+            this.Respawn();
     }
 
     void Update()

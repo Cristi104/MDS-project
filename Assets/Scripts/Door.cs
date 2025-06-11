@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Door : Activateable
+public class Door : Activateable, IEventListener
 {
     private Vector3 startPosition;
     private Vector3 targetPosition;
@@ -12,8 +12,26 @@ public class Door : Activateable
 
     void Start()
     {
-       startPosition = transform.position;
-       targetPosition = transform.position + openOffset;
+        startPosition = transform.position;
+        targetPosition = transform.position + openOffset;
+    }
+
+    void Awake()
+    {
+        EventManager.Instance.Subscribe(this);
+    }
+
+    public void UpdateEvent(string e)
+    {
+        if (e == "reset")
+        {
+            if (currentMoveCoroutine != null)
+            {
+                StopCoroutine(currentMoveCoroutine);
+                currentMoveCoroutine = null;
+                transform.position = startPosition;
+            }
+        }
     }
 
     // interpolate to target position over secondsToOpen seconds
