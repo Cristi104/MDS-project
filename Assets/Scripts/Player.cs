@@ -46,6 +46,7 @@ public class Player : MonoBehaviour, IPlayer
         else
         {
             clones[0].SetReplayData(replay);
+            clones[0].Respawn();
             clones.Add(clones[0]);
             clones.RemoveAt(0);
         }
