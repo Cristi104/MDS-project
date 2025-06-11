@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class SceneManager : MonoBehaviour
 {
-    [SerializeField] private int targetFPS = 60;
+    [SerializeField] 
+    private int targetFPS = 60;
 
     void Awake()
     {

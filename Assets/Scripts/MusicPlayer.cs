@@ -4,18 +4,19 @@ using System.Collections;
 
 public class MusicPlayer : MonoBehaviour
 {
-    private static MusicPlayer Instance;
+    private static MusicPlayer instance;
 
-    [SerializeField] private AudioClip[] tracks;
+    [SerializeField]
+    private AudioClip[] tracks;
 
     private AudioSource audioSource;
 
     void Awake()
     {
         // Singleton pattern
-        if (Instance == null)
+        if (instance == null)
         {
-            Instance = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
 
             audioSource = GetComponent<AudioSource>();

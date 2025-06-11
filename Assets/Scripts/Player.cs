@@ -120,9 +120,9 @@ public class Player : MonoBehaviour, IPlayer
         body.linearVelocity = newVelocity;
 
         // store data for clone replay 
-        replay.positions.Add(transform.position);
-        replay.animations.Add(animationName);
-        replay.facingDirections.Add(facingDirection);
+        replay.Positions.Add(transform.position);
+        replay.Animations.Add(animationName);
+        replay.FacingDirections.Add(facingDirection);
         
         // reset and spawn/respawn clone
         if(Input.GetKeyDown(KeyCode.R))

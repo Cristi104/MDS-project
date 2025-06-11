@@ -2,10 +2,13 @@ using UnityEngine;
 
 public class ExitDoor : MonoBehaviour
 {
-    [SerializeField] string nextLevelName = null;
-    [SerializeField] LevelTimer levelTimer; 
+    [SerializeField]
+    private string nextLevelName = null;
 
-    void Start()
+    [SerializeField]
+    private LevelTimer levelTimer;
+
+    private void Start()
     {
         if (levelTimer == null)
         {
@@ -13,11 +16,11 @@ public class ExitDoor : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player") && nextLevelName != null)
         {
-            levelTimer.StopTimer(); 
+            levelTimer.StopTimer();
             UnityEngine.SceneManagement.SceneManager.LoadScene(nextLevelName);
         }
     }

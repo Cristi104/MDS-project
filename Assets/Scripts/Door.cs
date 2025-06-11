@@ -7,20 +7,25 @@ public class Door : Activateable
     private Vector3 targetPosition;
     private Coroutine currentMoveCoroutine;
 
-    [SerializeField] private float secondsToOpen = 1f;
-    [SerializeField] private Vector3 openOffset = Vector3.zero;
+    [SerializeField]
+    private float secondsToOpen = 1f;
 
-    void Start()
+    [SerializeField]
+    private Vector3 openOffset = Vector3.zero;
+
+    private void Start()
     {
-       startPosition = transform.position;
-       targetPosition = transform.position + openOffset;
+        startPosition = transform.position;
+        targetPosition = transform.position + openOffset;
     }
 
-    // interpolate to target position over secondsToOpen seconds
+    /// <summary>
+    /// Smoothly moves door to target position over time
+    /// </summary>
     private IEnumerator MoveToPosition(Vector3 target)
     {
         Vector3 start = transform.position;
-        float elapsed = 0;
+        float elapsed = 0f;
 
         while (elapsed < secondsToOpen)
         {
@@ -32,30 +37,26 @@ public class Door : Activateable
         transform.position = target;
     }
 
-    // move from current position to targetPosition
     public override void Activate()
     {
         if (currentMoveCoroutine != null)
         {
             StopCoroutine(currentMoveCoroutine);
-            currentMoveCoroutine = null;
         }
         currentMoveCoroutine = StartCoroutine(MoveToPosition(targetPosition));
     }
 
-    // move from current position to startPosition
     public override void Deactivate()
     {
         if (currentMoveCoroutine != null)
         {
             StopCoroutine(currentMoveCoroutine);
-            currentMoveCoroutine = null;
         }
         currentMoveCoroutine = StartCoroutine(MoveToPosition(startPosition));
     }
 
-    void Update()
+    private void Update()
     {
-        
+        // Intentionally left empty
     }
 }

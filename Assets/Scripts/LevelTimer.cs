@@ -7,8 +7,7 @@ public class LevelTimer : MonoBehaviour
     public TMP_Text timerText;
     public TMP_Text bestTimeText;
     private float timeElapsed;
-    private bool isRunning = true;
-
+    private bool isRunning = true;  
     private string bestTimeKey;
 
     void Start()
