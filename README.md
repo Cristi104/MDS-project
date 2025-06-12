@@ -16,6 +16,4 @@ Time Echo is a puzzle-platformer where players manipulate time by working alongs
 Unlike traditional platformers, Time Echo forces players to think ahead, using their own past attempts as tools rather than obstacles.
 
 
-[prezentare-checkpoint-2](https://github.com/user-attachments/files/20073995/prezentare-checkpoint-2.pdf)
-
-[demo-checkpoint-2](https://www.youtube.com/watch?v=0Nr3PS9KY6I)
+![Diagrama](https://github.com/user-attachments/assets/79fb2ea8-70db-433c-8090-557b74e2db97)
