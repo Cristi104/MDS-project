@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles collision detection with spikes that cause player death.
+/// </summary>
 public class NewMonoBehaviourScript : MonoBehaviour
 {
 
@@ -10,7 +13,6 @@ public class NewMonoBehaviourScript : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // when a player or clone colides with the spikes call Death
         if (other.CompareTag("Player"))
         {
             IPlayer player = other.GetComponent<IPlayer>();

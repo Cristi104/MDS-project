@@ -1,57 +1,74 @@
 using UnityEngine;
 
+/// <summary>
+/// Handles button press interactions, animations, and sound effects.
+/// </summary>
+/// <remarks>
+/// This component manages button state, plays animations and sound effects,
+/// and controls an associated activatable object when pressed/unpressed.
+/// </remarks>
 public class Button : MonoBehaviour
 {
-    private int pressers = 0;
-    private Animator animator;
-    private AudioSource audioSource;
+    private int _pressers = 0;
+    private Animator _animator;
+    private AudioSource _audioSource;
 
-    private string soundFile = "Free UI Click Sound Effects Pack/AUDIO/Button/SFX_UI_Button_Organic_Plastic_Thin_Generic_3";
-    [SerializeField] private Activateable activateableObject;
-    void Start()
+    private const string SOUND_FILE = "Free UI Click Sound Effects Pack/AUDIO/Button/SFX_UI_Button_Organic_Plastic_Thin_Generic_3";
+
+    [SerializeField]
+    private Activateable activateableObject;
+
+    private void Start()
     {
-        audioSource = GetComponent<AudioSource>();
-        audioSource.clip = Resources.Load<AudioClip>(soundFile);
-        animator = GetComponent<Animator>();
-        animator.enabled = false;
+        _audioSource = GetComponent<AudioSource>();
+        _audioSource.clip = Resources.Load<AudioClip>(SOUND_FILE);
+        _animator = GetComponent<Animator>();
+        _animator.enabled = false;
     }
-    void OnTriggerEnter2D(Collider2D other)
+
+    /// <summary>
+    /// Handles collision when an object enters the button's trigger area.
+    /// </summary>
+    /// <param name="other">The collider of the object that entered the trigger.</param>
+    private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!gameObject.activeInHierarchy) return;
+
         if (other.CompareTag("Player"))
         {
-            // if there is no one on the button call open and
-            if (pressers == 0)
+            if (_pressers == 0)
             {
-                animator.enabled = true;
-                animator.Play("ButtonPress");
+                _animator.enabled = true;
+                _animator.Play("ButtonPress");
                 activateableObject.Activate();
-                audioSource.Play();
+                _audioSource.Play();
             }
-            pressers++;
+            _pressers++;
         }
     }
 
-    void OnTriggerExit2D(Collider2D other)
+    /// <summary>
+    /// Handles collision when an object exits the button's trigger area.
+    /// </summary>
+    private void OnTriggerExit2D(Collider2D other)
     {
+        if (!gameObject.activeInHierarchy) return;
+
         if (other.CompareTag("Player"))
         {
-            pressers--;
-            // when everyone leaves the button call close
-            if (pressers == 0 && activateableObject != null)
+            _pressers--;
+            if (_pressers == 0 && activateableObject != null)
             {
-                animator.enabled = true;
-                animator.Play("ButtonUnpress");
-                audioSource.Play();
-                if (activateableObject != null)
-                {
-                    activateableObject.Deactivate();
-                }
+                _animator.enabled = true;
+                _animator.Play("ButtonUnpress");
+                _audioSource.Play();
+                activateableObject.Deactivate();
             }
         }
     }
 
-    void Update()
+    private void Update()
     {
-        
+
     }
 }
