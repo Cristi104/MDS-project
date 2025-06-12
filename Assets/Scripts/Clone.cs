@@ -10,7 +10,7 @@ public class Clone : MonoBehaviour, IPlayer, IEventListener
     private int index;
     
     [SerializeField] private GameObject deathParticle;
-    
+
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
@@ -26,8 +26,15 @@ public class Clone : MonoBehaviour, IPlayer, IEventListener
             Color.cyan,
             Color.magenta
         };
-        int i = UnityEngine.Random.Range(0, presetColors.Length);
-        spriteRenderer.color = presetColors[i];
+        for(int i = 0; i < presetColors.Length; i++) {
+            presetColors[i].a = 0.7f;
+        }
+        int j = UnityEngine.Random.Range(0, presetColors.Length);
+        spriteRenderer.color = presetColors[j];
+        var mainModule = GetComponent<ParticleSystem>().main;
+        mainModule.startColor = presetColors[j];
+
+
     }
 
     public void Die()
