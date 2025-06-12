@@ -22,6 +22,7 @@ public class Player : MonoBehaviour, IPlayer
     [SerializeField] private int maxClones = 1;
     [SerializeField] private float jumpStrength = 5;
     [SerializeField] private Clone cloneTemplate;
+    [SerializeField] private GameObject deathParticle;
 
     void Start()
     {
@@ -39,13 +40,6 @@ public class Player : MonoBehaviour, IPlayer
 
     public void Respawn()
     {
-        replay = new ReplayData();
-        transform.position = startPosition;
-        body.linearVelocity = new Vector2(0, 0);
-    }
-
-    public void Die()
-    {
         if (clones.Count < maxClones)
         {
             Clone clone = Instantiate(cloneTemplate);
@@ -59,12 +53,21 @@ public class Player : MonoBehaviour, IPlayer
             clones.Add(clones[0]);
             clones.RemoveAt(0);
         }
+
         EventManager.Instance.Notify("reset");
 
-        // reset
         replay = new ReplayData();
         transform.position = startPosition;
         body.linearVelocity = new Vector2(0, 0);
+    }
+
+    public void Die()
+    {
+        GameObject particle = Instantiate(deathParticle);
+        particle.transform.position = transform.position;
+
+        // reset
+        Respawn();
     }
 
     void Update()
@@ -126,7 +129,7 @@ public class Player : MonoBehaviour, IPlayer
         // reset and spawn/respawn clone
         if(Input.GetKeyDown(KeyCode.R))
         {
-            Die();
+            Respawn();
         }
     }
 }

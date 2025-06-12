@@ -9,6 +9,8 @@ public class Clone : MonoBehaviour, IPlayer, IEventListener
     private SpriteRenderer spriteRenderer;
     private int index;
     
+    [SerializeField] private GameObject deathParticle;
+    
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
@@ -30,6 +32,8 @@ public class Clone : MonoBehaviour, IPlayer, IEventListener
 
     public void Die()
     {
+        GameObject particle = Instantiate(deathParticle);
+        particle.transform.position = transform.position;
         transform.position = new Vector3(100, 100, 100);
         index = replay.positions.Count + 1;
     }
