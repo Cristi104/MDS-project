@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SceneManager : MonoBehaviour
+public class MyceneManager : MonoBehaviour
 {
     [SerializeField] private int targetFPS = 60;
 
