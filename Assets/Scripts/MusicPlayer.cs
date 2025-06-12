@@ -6,9 +6,10 @@ public class MusicPlayer : MonoBehaviour
 {
     private static MusicPlayer Instance;
 
-    [SerializeField] private AudioClip[] tracks;
+    [SerializeField] 
+    private AudioClip[] tracks;
 
-    private AudioSource audioSource;
+    private AudioSource _audioSource;
 
     void Awake()
     {
@@ -18,12 +19,12 @@ public class MusicPlayer : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            audioSource = GetComponent<AudioSource>();
-            if (audioSource == null)
-                audioSource = gameObject.AddComponent<AudioSource>();
+            _audioSource = GetComponent<AudioSource>();
+            if (_audioSource == null)
+                _audioSource = gameObject.AddComponent<AudioSource>();
 
-            audioSource.loop = false;
-            audioSource.playOnAwake = false;
+            _audioSource.loop = false;
+            _audioSource.playOnAwake = false;
 
             StartCoroutine(PlayRandomLoop());
         }
@@ -41,8 +42,8 @@ public class MusicPlayer : MonoBehaviour
                 yield break;
 
             AudioClip nextTrack = tracks[Random.Range(0, tracks.Length)];
-            audioSource.clip = nextTrack;
-            audioSource.Play();
+            _audioSource.clip = nextTrack;
+            _audioSource.Play();
 
             // Wait until the current track finishes
             yield return new WaitForSeconds(nextTrack.length + 0.5f);

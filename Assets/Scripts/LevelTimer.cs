@@ -1,55 +1,66 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
+/// <summary>
+/// Tracks and displays level completion time, including best time records.
+/// </summary>
+/// <remarks>
+/// This component handles real-time timer display, stops timing when level completes,
+/// and manages persistent storage of best times using PlayerPrefs.
+/// </remarks>
 public class LevelTimer : MonoBehaviour
 {
-    public TMP_Text timerText;
-    public TMP_Text bestTimeText;
-    private float timeElapsed;
-    private bool isRunning = true;
+    [SerializeField]
+    private TMP_Text timerText;
 
-    private string bestTimeKey;
+    [SerializeField]
+    private TMP_Text bestTimeText;
 
-    void Start()
+    private float _timeElapsed;
+    private bool _isRunning = true;
+    private string _bestTimeKey;
+    private const float DEFAULT_BEST_TIME = float.MaxValue;
+
+    private void Start()
     {
-        bestTimeKey = "BestTime_" + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        _bestTimeKey = $"BestTime_{SceneManager.GetActiveScene().name}";
         DisplayBestTime();
     }
 
-    void Update()
+    private void Update()
     {
-        if (isRunning)
-        {
-            timeElapsed += Time.deltaTime;
-            timerText.text = "Time: " + timeElapsed.ToString("F2") + "s";
-        }
+        if (!_isRunning) return;
+
+        _timeElapsed += Time.deltaTime;
+        timerText.text = $"Time: {_timeElapsed:F2}s";
     }
 
+    /// <summary>
+    /// Stops the timer and checks/saves if the current time is a new record.
+    /// </summary>
     public void StopTimer()
     {
-        isRunning = false;
+        _isRunning = false;
 
-        float bestTime = PlayerPrefs.GetFloat(bestTimeKey, float.MaxValue);
-        if (timeElapsed < bestTime)
+        float bestTime = PlayerPrefs.GetFloat(_bestTimeKey, DEFAULT_BEST_TIME);
+        if (_timeElapsed < bestTime)
         {
-            PlayerPrefs.SetFloat(bestTimeKey, timeElapsed);
-            Debug.Log("New Best Time for " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name + ": " + timeElapsed);
+            PlayerPrefs.SetFloat(_bestTimeKey, _timeElapsed);
+            Debug.Log($"New Best Time for {SceneManager.GetActiveScene().name}: {_timeElapsed:F2}");
         }
 
         DisplayBestTime();
     }
 
-    void DisplayBestTime()
+    /// <summary>
+    /// Updates the UI with the current best time for this level.
+    /// </summary>
+    private void DisplayBestTime()
     {
-        float bestTime = PlayerPrefs.GetFloat(bestTimeKey, float.MaxValue);
-        if (bestTime == float.MaxValue)
-        {
-            bestTimeText.text = "Best Time: --";
-        }
-        else
-        {
-            bestTimeText.text = "Best Time: " + bestTime.ToString("F2") + "s";
-        }
+        float bestTime = PlayerPrefs.GetFloat(_bestTimeKey, DEFAULT_BEST_TIME);
+        bestTimeText.text = bestTime == DEFAULT_BEST_TIME
+            ? "Best Time: --"
+            : $"Best Time: {bestTime:F2}s";
     }
 }

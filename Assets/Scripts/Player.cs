@@ -2,132 +2,192 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
+/// <summary>
+/// Controls player movement, animations, and clone creation mechanics.
+/// </summary>
+/// <remarks>
+/// Handles player physics, input processing, sound effects, and maintains
+/// replay data for clone creation. Implements IPlayer interface.
+/// </remarks>
 public class Player : MonoBehaviour, IPlayer
 {
-    private Rigidbody2D body;
-    private Animator anim;
-    private int facingDirection;
-    private float lastVelocity;
-    private Vector3 startPosition;
-    private List<Clone> clones;
-    public ReplayData replay;
-    private AudioSource audioSource;
-    private string jumpSoundFile = "Free UI Click Sound Effects Pack/AUDIO/Pop/SFX_UI_Click_Organic_Pop_Liquid_Thick_Generic_1";
-    private string runSoundFile = "Free UI Click Sound Effects Pack/AUDIO/Sci-Fi/SFX_UI_Click_Designed_Scifi_Thin_Negative_Back_1";
-    private AudioClip jumpSound;
-    private AudioClip runSound;
-    private int frameCounter = 0;
+    private Rigidbody2D _body;
+    private Animator _animator;
+    private int _facingDirection;
+    private float _lastVelocity;
+    private Vector3 _startPosition;
+    private List<Clone> _clones;
+    private AudioSource _audioSource;
+    private int _frameCounter;
+    private ReplayData _replay;
 
-    [SerializeField] private float speed = 3;
-    [SerializeField] private int maxClones = 1;
-    [SerializeField] private float jumpStrength = 5;
-    [SerializeField] private Clone cloneTemplate;
-    [SerializeField] private GameObject deathParticle;
+    private const string JUMP_SOUND_PATH = "Free UI Click Sound Effects Pack/AUDIO/Pop/SFX_UI_Click_Organic_Pop_Liquid_Thick_Generic_1";
+    private const string RUN_SOUND_PATH = "Free UI Click Sound Effects Pack/AUDIO/Sci-Fi/SFX_UI_Click_Designed_Scifi_Thin_Negative_Back_1";
+    private const float VELOCITY_THRESHOLD = 0.01f;
+    private const float JUMP_VELOCITY_THRESHOLD = 0.001f;
+    private const int RUN_SOUND_FRAME_INTERVAL = 6;
 
-    void Start()
+    [SerializeField]
+    private float speed = 3f;
+
+    [SerializeField]
+    private int maxClones = 1;
+
+    [SerializeField]
+    private float jumpStrength = 5f;
+
+    [SerializeField]
+    private Clone cloneTemplate;
+
+    [SerializeField]
+    private GameObject deathParticle;
+
+    private AudioClip _jumpSound;
+    private AudioClip _runSound;
+
+    private void Start()
     {
-        jumpSound = Resources.Load<AudioClip>(jumpSoundFile);
-        runSound = Resources.Load<AudioClip>(runSoundFile);
-        audioSource = GetComponent<AudioSource>();
-        startPosition = transform.position;
-        anim = GetComponent<Animator>();
-        body = GetComponent<Rigidbody2D>();
-        replay = new ReplayData();
-        clones = new List<Clone>();
-        facingDirection = 1;
-        lastVelocity = 0;
+        _jumpSound = Resources.Load<AudioClip>(JUMP_SOUND_PATH);
+        _runSound = Resources.Load<AudioClip>(RUN_SOUND_PATH);
+        _audioSource = GetComponent<AudioSource>();
+        _startPosition = transform.position;
+        _animator = GetComponent<Animator>();
+        _body = GetComponent<Rigidbody2D>();
+        _replay = new ReplayData();
+        _clones = new List<Clone>();
+        _facingDirection = 1;
+        _lastVelocity = 0f;
+        _frameCounter = 0;
     }
 
+    /// <summary>
+    /// Resets player position and creates/manages clones.
+    /// </summary>
     public void Respawn()
     {
-        if (clones.Count < maxClones)
+        if (_clones.Count < maxClones)
         {
             Clone clone = Instantiate(cloneTemplate);
-            clone.SetReplayData(replay);
-            clones.Add(clone);
+            clone.SetReplayData(_replay);
+            _clones.Add(clone);
             EventManager.Instance.Subscribe(clone);
         }
         else
         {
-            clones[0].SetReplayData(replay);
-            clones.Add(clones[0]);
-            clones.RemoveAt(0);
+            _clones[0].SetReplayData(_replay);
+            _clones.Add(_clones[0]);
+            _clones.RemoveAt(0);
         }
 
         EventManager.Instance.Notify("reset");
-
-        replay = new ReplayData();
-        transform.position = startPosition;
-        body.linearVelocity = new Vector2(0, 0);
+        _replay = new ReplayData();
+        transform.position = _startPosition;
+        _body.linearVelocity = Vector2.zero;
     }
 
+    /// <summary>
+    /// Handles player death sequence and respawn.
+    /// </summary>
     public void Die()
     {
         GameObject particle = Instantiate(deathParticle);
         particle.transform.position = transform.position;
-
-        // reset
         Respawn();
     }
 
-    void Update()
+    /// <summary>
+    /// Main game loop processing all player inputs and state updates.
+    /// </summary>
+    private void Update()
     {
-        frameCounter++;
-        Vector2 newVelocity = new Vector2(Input.GetAxis("Horizontal") * speed, body.linearVelocity.y);
-        float deltaVelocity = (body.linearVelocity.y - lastVelocity);
-        string animationName = "Stand";
+        _frameCounter++;
+        ProcessMovement();
+        ProcessJump();
+        UpdateAnimations();
+        RecordReplayData();
+        ProcessResetInput();
+    }
 
-        // direction check to flip animations horizontaly
-        if (Math.Abs(body.linearVelocity.x) > 0.01)
+    /// <summary>
+    /// Calculates and applies horizontal movement based on player input.
+    /// </summary>
+    /// <remarks>
+    /// Reads horizontal axis input and applies velocity while preserving vertical momentum.
+    /// Does not handle jumping physics.
+    /// </remarks>
+    private void ProcessMovement()
+    {
+        Vector2 newVelocity = new Vector2(Input.GetAxis("Horizontal") * speed, _body.linearVelocity.y);
+        _body.linearVelocity = newVelocity;
+    }
+
+    /// <summary>
+    /// Handles jump input and physics when grounded.
+    /// </summary>
+    private void ProcessJump()
+    {
+        float deltaVelocity = _body.linearVelocity.y - _lastVelocity;
+        _lastVelocity = _body.linearVelocity.y;
+
+        if (Math.Abs(deltaVelocity) < JUMP_VELOCITY_THRESHOLD && Input.GetKeyDown(KeyCode.W))
         {
-            if (body.linearVelocity.x < -0.01)
-            {
-                facingDirection = -1;
-            }
+            _audioSource.clip = _jumpSound;
+            _audioSource.Play();
+            _body.linearVelocity = new Vector2(_body.linearVelocity.x, jumpStrength);
+        }
+    }
 
-            if (body.linearVelocity.x > 0.01)
-            {
-                facingDirection = 1;
-            }
+    /// <summary>
+    /// Manages animation states and character facing direction.
+    /// </summary>
+    private void UpdateAnimations()
+    {
+        string animationName = "Stand";
+        float deltaVelocity = _body.linearVelocity.y - _lastVelocity;
 
-            if (Math.Abs(deltaVelocity) < 0.01)
+        // Handle facing direction
+        if (Math.Abs(_body.linearVelocity.x) > VELOCITY_THRESHOLD)
+        {
+            _facingDirection = _body.linearVelocity.x > 0 ? 1 : -1;
+
+            // Play run sound and animation
+            if (Math.Abs(deltaVelocity) < VELOCITY_THRESHOLD)
             {
-                if (frameCounter % 6 == 0)
+                if (_frameCounter % RUN_SOUND_FRAME_INTERVAL == 0)
                 {
-                    audioSource.clip = runSound;
-                    audioSource.Play();
+                    _audioSource.clip = _runSound;
+                    _audioSource.Play();
                 }
                 animationName = "Run";
             }
         }
 
-        // jumping and jump animation
-        if(Math.Abs(deltaVelocity) < 0.001)
-        {
-            if(Input.GetKeyDown(KeyCode.W))
-            {
-                audioSource.clip = jumpSound;
-                audioSource.Play();
-                newVelocity.y = jumpStrength;
-            }
-        } 
-        else 
+        // Handle jump animation
+        if (Math.Abs(deltaVelocity) >= JUMP_VELOCITY_THRESHOLD)
         {
             animationName = "Jump";
         }
 
-        // update player
-        transform.localScale = new Vector3(facingDirection, 1, 1);
-        anim.Play(animationName);
-        body.linearVelocity = newVelocity;
+        transform.localScale = new Vector3(_facingDirection, 1, 1);
+        _animator.Play(animationName);
+    }
 
-        // store data for clone replay 
-        replay.positions.Add(transform.position);
-        replay.animations.Add(animationName);
-        replay.facingDirections.Add(facingDirection);
-        
-        // reset and spawn/respawn clone
-        if(Input.GetKeyDown(KeyCode.R))
+    /// <summary>
+    /// Records current player state for clone replay system.
+    /// </summary>
+    private void RecordReplayData()
+    {
+        _replay.positions.Add(transform.position);
+        _replay.animations.Add(_animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
+        _replay.facingDirections.Add(_facingDirection);
+    }
+
+    /// <summary>
+    /// Checks for reset input and triggers respawn when detected.
+    /// </summary>
+    private void ProcessResetInput()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
         {
             Respawn();
         }

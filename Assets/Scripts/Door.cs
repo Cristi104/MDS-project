@@ -1,40 +1,55 @@
 using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Represents a door that can be opened and closed through activation.
+/// </summary>
+/// <remarks>
+/// This class handles door movement between open and closed positions,
+/// responds to reset events, and manages coroutine-based smooth movement.
+/// </remarks>
 public class Door : Activateable, IEventListener
 {
-    private Vector3 startPosition;
-    private Vector3 targetPosition;
-    private Coroutine currentMoveCoroutine;
+    private Vector3 _startPosition;
+    private Vector3 _targetPosition;
+    private Coroutine _currentMoveCoroutine;
 
-    [SerializeField] private float secondsToOpen = 1f;
-    [SerializeField] private Vector3 openOffset = Vector3.zero;
+    [SerializeField]
+    private float secondsToOpen = 1f;
 
-    void Start()
+    [SerializeField]
+    private Vector3 openOffset = Vector3.zero;
+
+    private void Start()
     {
-        startPosition = transform.position;
-        targetPosition = transform.position + openOffset;
+        _startPosition = transform.position;
+        _targetPosition = transform.position + openOffset;
     }
 
-    void Awake()
+    private void Awake()
     {
         EventManager.Instance.Subscribe(this);
     }
 
-    public void UpdateEvent(string e)
+    /// <summary>
+    /// Handles incoming events.
+    /// </summary>
+    public void UpdateEvent(string eventName)
     {
-        if (e == "reset")
+        if (eventName == "reset")
         {
-            if (currentMoveCoroutine != null)
+            if (_currentMoveCoroutine != null)
             {
-                StopCoroutine(currentMoveCoroutine);
-                currentMoveCoroutine = null;
-                transform.position = startPosition;
+                StopCoroutine(_currentMoveCoroutine);
+                _currentMoveCoroutine = null;
+                transform.position = _startPosition;
             }
         }
     }
 
-    // interpolate to target position over secondsToOpen seconds
+    /// <summary>
+    /// Smoothly moves the door to the target position over time.
+    /// </summary>
     private IEnumerator MoveToPosition(Vector3 target)
     {
         Vector3 start = transform.position;
@@ -50,29 +65,33 @@ public class Door : Activateable, IEventListener
         transform.position = target;
     }
 
-    // move from current position to targetPosition
+    /// <summary>
+    /// Opens the door by moving it to the target position.
+    /// </summary>
     public override void Activate()
     {
-        if (currentMoveCoroutine != null)
+        if (_currentMoveCoroutine != null)
         {
-            StopCoroutine(currentMoveCoroutine);
-            currentMoveCoroutine = null;
+            StopCoroutine(_currentMoveCoroutine);
+            _currentMoveCoroutine = null;
         }
-        currentMoveCoroutine = StartCoroutine(MoveToPosition(targetPosition));
+        _currentMoveCoroutine = StartCoroutine(MoveToPosition(_targetPosition));
     }
 
-    // move from current position to startPosition
+    /// <summary>
+    /// Closes the door by moving it back to the start position.
+    /// </summary>
     public override void Deactivate()
     {
-        if (currentMoveCoroutine != null)
+        if (_currentMoveCoroutine != null)
         {
-            StopCoroutine(currentMoveCoroutine);
-            currentMoveCoroutine = null;
+            StopCoroutine(_currentMoveCoroutine);
+            _currentMoveCoroutine = null;
         }
-        currentMoveCoroutine = StartCoroutine(MoveToPosition(startPosition));
+        _currentMoveCoroutine = StartCoroutine(MoveToPosition(_startPosition));
     }
 
-    void Update()
+    private void Update()
     {
         
     }
