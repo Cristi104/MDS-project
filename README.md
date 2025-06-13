@@ -16,4 +16,5 @@ Time Echo is a puzzle-platformer where players manipulate time by working alongs
 Unlike traditional platformers, Time Echo forces players to think ahead, using their own past attempts as tools rather than obstacles.
 
 
-![Diagrama](https://github.com/user-attachments/assets/79fb2ea8-70db-433c-8090-557b74e2db97)
+![DiagramaUseCase](https://github.com/user-attachments/assets/79fb2ea8-70db-433c-8090-557b74e2db97)
+![DiagramaStari](https://github.com/user-attachments/assets/1902dd04-bd36-40f3-9c68-44865f56cd05)
