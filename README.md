@@ -24,6 +24,10 @@ Unlike traditional platformers, Time Echo forces players to think ahead, using t
 ### State Diagram
 ![DiagramaStari](https://github.com/user-attachments/assets/9c8b80a5-b69d-4ba1-b62e-98f11b8731e2)
 
+## Automated Testing
+The game uses the Unity Engine Test Framework in order to ensure proper initialization and functioning of Game Objects. Tests are set to run inside Play Mode to simulate the actual game environment as close as possible.
+To run the tests go to window - General - Test Runner - Play Mode - Run All.
+
 ## Coding Standards
 This project follows consistent C# coding conventions to maintain clean and readable code. Classes and public methods use PascalCase, while private fields use camelCase with an underscore prefix (e.g., _privateField). Constants are written in UPPER_CASE. All public members include XML documentation with summary tags and remark tags where applicable.
 We enforce good encapsulation by keeping fields private and exposing them via properties or serialized fields when needed.
@@ -42,6 +46,3 @@ The **observer** pattern, implemented through the IEventListener interface, crea
 
 • Buttons activating/deactivating objects without direct references
 
-### Strategy
-
-The Activateable interface (Activate()/Deactivate()) allows buttons to trigger different behaviors. Doors, traps, etc. implement their own logic while working with the same button system.
