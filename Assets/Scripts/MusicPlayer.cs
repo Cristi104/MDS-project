@@ -4,7 +4,7 @@ using System.Collections;
 
 public class MusicPlayer : MonoBehaviour
 {
-    private static MusicPlayer Instance;
+    public static MusicPlayer Instance { get; private set; }
 
     [SerializeField] 
     private AudioClip[] tracks;
