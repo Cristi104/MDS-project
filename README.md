@@ -46,3 +46,5 @@ The **observer** pattern, implemented through the IEventListener interface, crea
 
 • Buttons activating/deactivating objects without direct references
 
+## Prompt Engineering
+[Time_Echo_LLM_Experience.docx](https://github.com/user-attachments/files/20729004/Time_Echo_LLM_Experience.docx)
